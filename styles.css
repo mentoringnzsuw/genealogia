@@ -1,0 +1,328 @@
+/* Reset and base styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --topbar-height: 65px;
+}
+
+html, body {
+    height: 100%;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    overflow: hidden;
+    height: 100vh;
+    position: relative;
+}
+
+/* Top gradient bar */
+.top-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: var(--topbar-height);
+    background: linear-gradient(to right, #FF844A, #ff3a3a, #364d9b);
+    padding: 10px 0;
+    color: white;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    z-index: 2000;
+}
+
+.top-bar .container {
+    display: flex;
+    align-items: center;
+    padding: 0 20px;
+}
+
+.logo {
+    margin-right: 15px;
+}
+
+.site-title {
+    font-weight: bold;
+    font-size: 1.5rem;
+    margin-right: auto;
+}
+
+.control-buttons {
+    display: flex;
+    gap: 10px;
+}
+
+.control-button {
+    background-color: rgba(255, 255, 255, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    color: white;
+    padding: 8px 16px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.2s;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.control-button:hover {
+    background-color: rgba(255, 255, 255, 0.3);
+}
+
+/* Main visualization container */
+#chart-container {
+    position: absolute;
+    top: var(--topbar-height);
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: white;
+    overflow: hidden;
+}
+
+/* Make sure SVG fills the container */
+#family-tree-svg {
+    width: 100%;
+    height: 100%;
+    display: block;
+    cursor: grab;
+}
+
+#family-tree-svg.grabbing {
+    cursor: grabbing !important;
+}
+
+.node {
+    cursor: pointer;
+}
+
+.node.dragging {
+    cursor: grabbing !important;
+}
+
+/* Red rim for selected nodes in ancestry view */
+.red-rim {
+    stroke: #c62828 !important;
+    stroke-width: 4px !important;
+}
+
+/* Search dialog */
+.dialog-overlay {
+    position: fixed;
+    top: var(--topbar-height);
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+}
+
+.dialog-overlay.active {
+    opacity: 1;
+    pointer-events: all;
+}
+
+.dialog-content {
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    width: 90%;
+    max-width: 500px;
+    max-height: calc(100vh - var(--topbar-height) - 40px);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    transform: translateY(-20px);
+    transition: transform 0.3s ease;
+}
+
+.dialog-overlay.active .dialog-content {
+    transform: translateY(0);
+}
+
+.dialog-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 20px;
+    border-bottom: 1px solid #eee;
+}
+
+.dialog-header h2 {
+    font-size: 1.2rem;
+    color: #333;
+    margin: 0;
+}
+
+.close-button {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    color: #888;
+    cursor: pointer;
+    padding: 0 5px;
+}
+
+.dialog-body {
+    padding: 20px;
+    overflow-y: auto;
+}
+
+.search-wrapper {
+    position: relative;
+    width: 100%;
+}
+
+#search-input, #person1-input, #person2-input {
+    width: 100%;
+    padding: 12px 15px;
+    border: 2px solid #1E90FF;
+    border-radius: 25px;
+    font-size: 16px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    outline: none;
+    transition: all 0.3s;
+}
+
+#search-input:focus, #person1-input:focus, #person2-input:focus {
+    box-shadow: 0 3px 8px rgba(30, 144, 255, 0.3);
+}
+
+#search-results, .ancestry-results {
+    margin-top: 10px;
+    max-height: 150px;
+    overflow-y: auto;
+}
+
+.search-item {
+    padding: 10px 15px;
+    cursor: pointer;
+    transition: background 0.2s;
+    border-radius: 4px;
+}
+
+.search-item:hover {
+    background-color: #e6f2ff;
+}
+
+/* Ancestry dialog specific styles */
+.ancestry-search label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+    color: #555;
+}
+
+.separator {
+    height: 1px;
+    background-color: #eee;
+    margin: 20px 0;
+}
+
+.selected-person {
+    display: none;
+    padding: 8px 12px;
+    background-color: #e6f2ff;
+    border-radius: 4px;
+    margin-top: 10px;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.selected-person.active {
+    display: flex;
+}
+
+.person-name {
+    font-weight: 500;
+}
+
+.clear-selection {
+    background: none;
+    border: none;
+    color: #888;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.find-button {
+    display: block;
+    width: 100%;
+    margin-top: 20px;
+    padding: 12px;
+    background-color: #1E90FF;
+    color: white;
+    border: none;
+    border-radius: 25px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.find-button:hover:not(:disabled) {
+    background-color: #187bcd;
+}
+
+.find-button:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+}
+
+/* Status message for visualization */
+#status-message {
+    position: absolute;
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: rgba(30, 144, 255, 0.9);
+    color: white;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 14px;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.3s;
+    z-index: 20;
+}
+
+/* Loading indicator */
+#loading-indicator {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: rgba(255, 255, 255, 0.9);
+    color: #1E90FF;
+    padding: 15px 30px;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: bold;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    z-index: 30;
+}
+
+/* Responsive behavior */
+@media (max-width: 900px) {
+    .site-title, .logo-container {
+        display: none;
+    }
+
+    #navbarcontainer {
+        margin-left: 10px;
+    }
+    
+    .control-button {
+        padding: 6px 12px;
+        font-size: 12px;
+    }
+}
